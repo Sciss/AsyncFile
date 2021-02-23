@@ -2,7 +2,7 @@
  *  DesktopFile.scala
  *  (AsyncFile)
  *
- *  Copyright (c) 2020 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2020-2021 Hanns Holger Rutz. All rights reserved.
  *
  *  This software is published under the GNU Affero General Public License v3+
  *
@@ -46,6 +46,7 @@ object DesktopFile {
       // than preemptively deleting the file before re-open.
       f.delete()
       AsynchronousFileChannel.open(p,
+        StandardOpenOption.READ,
         StandardOpenOption.WRITE,
         StandardOpenOption.CREATE,
         StandardOpenOption.TRUNCATE_EXISTING,
