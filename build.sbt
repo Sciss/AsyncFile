@@ -10,12 +10,12 @@ lazy val deps = new {
     val log       = "0.1.1"
   }
   val test = new {
-    val scalaTest = "3.2.5"
+    val scalaTest = "3.2.7"
   }
 }
 
 lazy val commonJvmSettings = Seq(
-  crossScalaVersions := Seq("3.0.0-RC1", "2.13.5", "2.12.13"),
+  crossScalaVersions := Seq("3.0.0-RC2", "2.13.5", "2.12.13"),
 )
 
 // sonatype plugin requires that these are in global
