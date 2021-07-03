@@ -8,7 +8,7 @@
 AsyncFile is a Scala library to read and write files asynchronously with a common API both for the JVM and for
 JavaScript (Scala.js). It is (C)opyright 2020–2021 by Hanns Holger Rutz. All rights reserved.
 This project is released under
-the [GNU Affero General Public License](https://git.iem.at/sciss/AsyncFile/raw/main/LICENSE) v3+ and comes
+the [GNU Affero General Public License](https://github.com/Sciss/AsyncFile/raw/main/LICENSE) v3+ and comes
 with absolutely no warranties. To contact the author, send an e-mail to `contact at sciss.de`.
 
 __This project is still in experimental state!__
@@ -21,7 +21,7 @@ To use the library in your project:
 
     "de.sciss" %% "asyncfile" % v
 
-The current version `v` is `"0.1.3"`
+The current version `v` is `"0.1.4"`
 
 ## contributing
 

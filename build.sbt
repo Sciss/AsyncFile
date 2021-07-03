@@ -1,7 +1,7 @@
 lazy val baseName  = "AsyncFile"
 lazy val baseNameL = baseName.toLowerCase
 
-lazy val projectVersion = "0.1.3"
+lazy val projectVersion = "0.1.4"
 lazy val mimaVersion    = "0.1.0"
 
 lazy val deps = new {
@@ -15,26 +15,24 @@ lazy val deps = new {
 }
 
 lazy val commonJvmSettings = Seq(
-  crossScalaVersions := Seq("3.0.0", "2.13.5", "2.12.13"),
+  crossScalaVersions := Seq("3.0.0", "2.13.6", "2.12.14"),
 )
 
-// sonatype plugin requires that these are in global
-ThisBuild / version      := projectVersion
-ThisBuild / organization := "de.sciss"
+ThisBuild / version       := projectVersion
+ThisBuild / organization  := "de.sciss"
+ThisBuild / versionScheme := Some("pvp")
 
 lazy val root = crossProject(JSPlatform, JVMPlatform).in(file("."))
   .enablePlugins(BuildInfoPlugin)
   .jvmSettings(commonJvmSettings)
   .settings(
     name               := baseName,
-//    version            := projectVersion,
-//    organization       := "de.sciss",
-    scalaVersion       := "2.13.5",
+    scalaVersion       := "2.13.6",
     description        := "A library to read and write files asynchronously on the JVM and JS",
     homepage           := Some(url(s"https://github.com/Sciss/${name.value}")),
     licenses           := Seq("AGPL v3+" -> url("http://www.gnu.org/licenses/agpl-3.0.txt")),
     mimaPreviousArtifacts := Set("de.sciss" %% baseNameL % mimaVersion),
-    initialCommands in console := """import de.sciss.synth.io._""",
+    console / initialCommands := """import de.sciss.synth.io._""",
     libraryDependencies ++= Seq(
       "de.sciss"      %%% "log"       % deps.main.log,
       "org.scalatest" %%% "scalatest" % deps.test.scalaTest % Test,
@@ -42,7 +40,7 @@ lazy val root = crossProject(JSPlatform, JVMPlatform).in(file("."))
     scalacOptions ++= Seq(
       "-deprecation", "-unchecked", "-feature", "-encoding", "utf8", "-Xlint", "-Xsource:2.13",
     ),
-    scalacOptions in (Compile, compile) ++= {
+    Compile / compile / scalacOptions ++= {
       val jdkGt8  = scala.util.Properties.isJavaAtLeast("9")
       val sv      = scalaVersion.value
       val isDotty = sv.startsWith("3.") // https://github.com/lampepfl/dotty/issues/8634
@@ -66,7 +64,7 @@ lazy val root = crossProject(JSPlatform, JVMPlatform).in(file("."))
 // ---- publishing ----
 lazy val publishSettings = Seq(
   publishMavenStyle := true,
-  publishArtifact in Test := false,
+  Test / publishArtifact := false,
   pomIncludeRepository := { _ => false },
   developers := List(
     Developer(
@@ -77,8 +75,8 @@ lazy val publishSettings = Seq(
     )
   ),
   scmInfo := {
-    val h = "git.iem.at"
-    val a = s"sciss/${name.value}"
+    val h = "github.com"
+    val a = s"Sciss/${name.value}"
     Some(ScmInfo(url(s"https://$h/$a"), s"scm:git@$h:$a.git"))
   },
 )

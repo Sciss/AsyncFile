@@ -51,7 +51,8 @@ object Ops {
       val pp  = parentPath(p)
       if (pp.isEmpty) None else {
         val scheme  = uri.getScheme
-        Some(new URI(scheme, pp, null))
+        val host    = uri.getHost
+        Some(new URI(scheme, host, pp, null))
       }
     }
 
@@ -64,7 +65,8 @@ object Ops {
       val nameD   = base + extD
       val pNew    = pp + nameD
       val scheme  = uri.getScheme
-      new URI(scheme, pNew, null)
+      val host    = uri.getHost
+      new URI(scheme, host, pNew, null)
     }
 
     def replaceName(name: String): URI = {
@@ -74,14 +76,17 @@ object Ops {
       val nameD   = if (isDir) name + "/" else name
       val pNew    = pp + nameD
       val scheme  = uri.getScheme
-      new URI(scheme, pNew, null)
+      val host    = uri.getHost
+      new URI(scheme, host, pNew, null)
     }
 
     def / (sub: String): URI = {
       val parent0 = uri.normalize().getPath
       val parentS = if (parent0.isEmpty || parent0.endsWith("/")) parent0 else s"$parent0/"
       val path    = s"$parentS$sub"
-      new URI(uri.getScheme, path, null)
+      val scheme  = uri.getScheme
+      val host    = uri.getHost
+      new URI(scheme, host, path, null)
     }
   }
 }

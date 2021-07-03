@@ -125,7 +125,9 @@ final class DesktopFileImpl(val fileSystem: DesktopFileSystem, peer: Asynchronou
       pr.success(res)
       ()
     } catch {
-      case NonFatal(ex) => pr.failure(ex)
+      case NonFatal(ex) =>
+        pr.failure(ex)
+        ()
     }
   }
 

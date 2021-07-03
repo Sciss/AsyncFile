@@ -38,7 +38,7 @@ object IndexedDBFile {
   private[asyncfile] val READ_WRITE   = "readwrite"
 
   private def uriFromPath(path: String): URI =
-    new URI(IndexedDBFileSystemProvider.scheme, path, null)
+    new URI(IndexedDBFileSystemProvider.scheme, null, path, null)
 
   object Meta {
     def fromArrayBuffer(uri: URI, b: js.typedarray.ArrayBuffer): Meta = {

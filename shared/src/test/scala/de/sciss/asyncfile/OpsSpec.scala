@@ -32,5 +32,9 @@ class OpsSpec extends AnyFlatSpec with Matchers {
     val repl2 = child2.replaceExt("JPG")
     assert(repl2 === new URI("file:/home/pi/foo.JPG/"))
     assert(repl2.extL === "jpg")
+    // issue #1
+    val child = uriDir / "tmp[1]"
+    assert (child.parentOption === Some(uriDir))
+    assert (child.base === "tmp[1]")
   }
 }
