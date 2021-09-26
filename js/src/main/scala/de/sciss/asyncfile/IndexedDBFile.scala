@@ -88,8 +88,16 @@ object IndexedDBFile {
   private[asyncfile] def reqToFuture[A](req: IDBRequest, failure: dom.ErrorEvent => Throwable = mkException)
                                        (success: dom.Event => A): Future[A] = {
     val pr = Promise[A]()
-    req.onerror = { e =>
-      pr.failure(failure(e))
+    req.onerror = {
+      // XXX TODO: why this guarantee broke in scalajs DOM 1.2.0 ?
+      e0 =>
+        val e = e0.asInstanceOf[dom.ErrorEvent]
+        pr.failure(failure(e))
+//      case e: dom.ErrorEvent =>
+//        pr.failure(failure(e))
+//
+//      case _ =>
+//        pr.failure(new IOException(req.error.message))
     }
     req.onsuccess = { e =>
       try {

@@ -13,9 +13,11 @@
 
 package de.sciss.asyncfile
 
+import de.sciss.asyncfile.impl.WatcherImpl
+import de.sciss.model.Model
+
 import java.io.{File, IOException}
 import java.net.URI
-
 import scala.collection.immutable.{Seq => ISeq}
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success, Try}
@@ -23,14 +25,14 @@ import scala.util.{Failure, Success, Try}
 final class DesktopFileSystem()(implicit val executionContext: ExecutionContext)
   extends AsyncFileSystem { self =>
 
-  def provider: AsyncFileSystemProvider = DesktopFileSystemProvider
+  override def provider: AsyncFileSystemProvider = DesktopFileSystemProvider
 
-  def scheme: String = provider.scheme
-  def name  : String = provider.name
+  override def scheme: String = provider.scheme
+  override def name  : String = provider.name
 
-  def release(): Unit = ()
+  override def release(): Unit = ()
 
-  def openRead(uri: URI): Future[AsyncReadableByteChannel] = {
+  override def openRead(uri: URI): Future[AsyncReadableByteChannel] = {
     val f   = getFile(uri)
     val tr  = Try(DesktopFile.openRead(f)(self))
     tr match {
@@ -39,7 +41,7 @@ final class DesktopFileSystem()(implicit val executionContext: ExecutionContext)
     }
   }
 
-  def openWrite(uri: URI, append: Boolean = false): Future[AsyncWritableByteChannel] = {
+  override def openWrite(uri: URI, append: Boolean = false): Future[AsyncWritableByteChannel] = {
     val f   = getFile(uri)
     val tr  = Try(DesktopFile.openWrite(f, append = append)(self))
     tr match {
@@ -48,25 +50,25 @@ final class DesktopFileSystem()(implicit val executionContext: ExecutionContext)
     }
   }
 
-  def mkDir(uri: URI): Future[Unit] = {
+  override def mkDir(uri: URI): Future[Unit] = {
     val f   = getFile(uri)
     val res = f.mkdir()
     if (res) Future.unit else Future.failed(new IOException(s"Could not create directory $uri"))
   }
 
-  def mkDirs(uri: URI): Future[Unit] = {
+  override def mkDirs(uri: URI): Future[Unit] = {
     val f   = getFile(uri)
     val res = f.mkdirs()
     if (res) Future.unit else Future.failed(new IOException(s"Could not create directories $uri"))
   }
 
-  def delete(uri: URI): Future[Unit] = {
+  override def delete(uri: URI): Future[Unit] = {
     val f   = getFile(uri)
     val res = f.delete()
     if (res) Future.unit else Future.failed(new IOException(s"Could not delete file $uri"))
   }
 
-  def info(uri: URI): Future[FileInfo] = {
+  override def info(uri: URI): Future[FileInfo] = {
     val f = getFile(uri)
     if (f.exists()) {
       var flags   = 0
@@ -83,12 +85,15 @@ final class DesktopFileSystem()(implicit val executionContext: ExecutionContext)
     }
   }
 
-  def listDir(uri: URI): Future[ISeq[URI]] = {
+  override def listDir(uri: URI): Future[ISeq[URI]] = {
     val f   = getFile(uri)
     val arr = f.listFiles()
     val res = arr.iterator.map(_.toURI).toVector  // .toSeq has bad type in Scala 2.12
     Future.successful(res)
   }
+
+  override def watchFile(uri: URI, modify: Boolean): Model[Watch.File] = WatcherImpl.fileModel(uri, modify = modify)
+  override def watchDir (uri: URI, modify: Boolean): Model[Watch.Base] = WatcherImpl.dirModel (uri, modify = modify)
 
   private def getFile(uri: URI): File = new File(uri)
 }

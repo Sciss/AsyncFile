@@ -21,7 +21,7 @@ To use the library in your project:
 
     "de.sciss" %% "asyncfile" % v
 
-The current version `v` is `"0.1.4"`
+The current version `v` is `"0.2.0"`
 
 ## contributing
 
@@ -51,4 +51,5 @@ in the browser, you can directly use `IndexedDBFile.openRead(uri)` and `IndexedD
   do not work and return failed futures.
 - `IndexedDBFileSystem` has a fixed block size and does not yet use caching. Performance improvements are to be
   expected in future versions with larger block sizes and in-memory caching in place.
-  
+- `IndexedDBFileSystem` currently does not implement file watcher functionality (`watchDir` and `watchFile` throw
+  exceptions).

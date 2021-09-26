@@ -15,7 +15,7 @@ package de.sciss.asyncfile
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait AsyncFileSystemProvider {
+abstract class AsyncFileSystemProvider {
   /** The URI scheme of this file system, such as `"file"` (desktop) or `"idb"` (IndexedDB in the browser). */
   def scheme: String
 

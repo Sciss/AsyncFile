@@ -1,21 +1,22 @@
 lazy val baseName  = "AsyncFile"
 lazy val baseNameL = baseName.toLowerCase
 
-lazy val projectVersion = "0.1.4"
-lazy val mimaVersion    = "0.1.0"
+lazy val projectVersion = "0.2.0"
+lazy val mimaVersion    = "0.2.0"
 
 lazy val deps = new {
   val main = new {
-    val dom       = "1.1.0"
+    val dom       = "1.2.0"
     val log       = "0.1.1"
+    val model     = "0.3.5"
   }
   val test = new {
-    val scalaTest = "3.2.9"
+    val scalaTest = "3.2.10"
   }
 }
 
 lazy val commonJvmSettings = Seq(
-  crossScalaVersions := Seq("3.0.0", "2.13.6", "2.12.14"),
+  crossScalaVersions := Seq("3.0.2", "2.13.6", "2.12.15"),
 )
 
 ThisBuild / version       := projectVersion
@@ -35,6 +36,7 @@ lazy val root = crossProject(JSPlatform, JVMPlatform).in(file("."))
     console / initialCommands := """import de.sciss.synth.io._""",
     libraryDependencies ++= Seq(
       "de.sciss"      %%% "log"       % deps.main.log,
+      "de.sciss"      %%% "model"     % deps.main.model,
       "org.scalatest" %%% "scalatest" % deps.test.scalaTest % Test,
     ),
     scalacOptions ++= Seq(
@@ -52,6 +54,7 @@ lazy val root = crossProject(JSPlatform, JVMPlatform).in(file("."))
       BuildInfoKey.map(homepage) { case (k, opt)           => k -> opt.get },
       BuildInfoKey.map(licenses) { case (_, Seq((lic, _))) => "license" -> lic }
     ),
+    buildInfoPackage := "de.sciss.asyncfile"
   )
   .jsSettings(
     libraryDependencies ++= Seq(

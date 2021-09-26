@@ -20,7 +20,7 @@ import org.scalajs.dom.raw.IDBDatabase
 
 import scala.concurrent.{ExecutionContext, Future}
 
-object IndexedDBFileSystemProvider  extends AsyncFileSystemProvider {
+object IndexedDBFileSystemProvider extends AsyncFileSystemProvider {
   final val scheme  = "idb"
   final val name    = "IndexedDB File System"
 
@@ -28,7 +28,7 @@ object IndexedDBFileSystemProvider  extends AsyncFileSystemProvider {
   private val DB_FILE_SYSTEM  = "fs"
 
   private def openFileSystem(): Future[IDBDatabase] = {
-    val req = dom.window.indexedDB.open(DB_FILE_SYSTEM, VERSION)
+    val req = dom.window.indexedDB.get.open(DB_FILE_SYSTEM, VERSION)
 
     req.onupgradeneeded = { _ =>
       val db = req.result.asInstanceOf[IDBDatabase]

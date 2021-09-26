@@ -13,12 +13,13 @@
 
 package de.sciss.asyncfile
 
-import java.net.URI
+import de.sciss.model.Model
 
+import java.net.URI
 import scala.collection.immutable.{Seq => ISeq}
 import scala.concurrent.{ExecutionContext, Future}
 
-trait AsyncFileSystem {
+abstract class AsyncFileSystem {
   /** The provider that created this file system. */
   def provider: AsyncFileSystemProvider
 
@@ -59,6 +60,28 @@ trait AsyncFileSystem {
 
   /** Lists the contents of a directory. */
   def listDir(uri: URI): Future[ISeq[URI]]
+
+  /** Creates a file watcher model for a given file.
+    * This allows to observe the creation, deletion, or modification (if `modify` is `true`) of a single file.
+    *
+    * Actual watching starts when the first listener is registered,
+    * and terminates when the last listener is unregistered.
+    *
+    * Throws an exception if file watching is not supported.
+    */
+  def watchFile(uri: URI, modify: Boolean = false): Model[Watch.File]
+
+  /** Creates a file watcher model for a given directory.
+    * This allows to observe the creation or deletion of a directory (`Watch.File`), as well
+    * as creation, deletion, or modification (if `modify` is `true`) of direct children inside that
+    * directory (`Watch.Dir`).
+    *
+    * Actual watching starts when the first listener is registered,
+    * and terminates when the last listener is unregistered.
+    *
+    * Throws an exception if file watching is not supported.
+    */
+  def watchDir(uri: URI, modify: Boolean = false): Model[Watch.Base]
 
   implicit def executionContext: ExecutionContext
 }
