@@ -1,7 +1,7 @@
 lazy val baseName  = "AsyncFile"
 lazy val baseNameL = baseName.toLowerCase
 
-lazy val projectVersion = "0.2.0"
+lazy val projectVersion = "0.2.1"
 lazy val mimaVersion    = "0.2.0"
 
 lazy val deps = new {

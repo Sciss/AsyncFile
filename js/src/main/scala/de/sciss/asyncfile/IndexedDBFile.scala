@@ -15,10 +15,10 @@ package de.sciss.asyncfile
 
 import java.io.IOException
 import java.net.URI
-
 import de.sciss.asyncfile.AsyncFile.log
 import de.sciss.asyncfile.impl.IndexedDBFileImpl
 import org.scalajs.dom
+import org.scalajs.dom.DOMException
 import org.scalajs.dom.raw.{IDBKeyRange, IDBObjectStore, IDBRequest}
 
 import scala.concurrent.{Future, Promise}
@@ -77,27 +77,25 @@ object IndexedDBFile {
     }
   }
 
-  private[asyncfile] def mkExceptionMessage(e: dom.ErrorEvent): String =
-    s"in ${e.filename} line ${e.lineno} column ${e.colno}: ${e.message}"
+//  private[asyncfile] def mkExceptionMessage(e: dom.ErrorEvent): String =
+//    s"in ${e.filename} line ${e.lineno} column ${e.colno}: ${e.message}"
 
-  private[asyncfile] def mkException(e: dom.ErrorEvent): Exception =
+  private[asyncfile] def mkExceptionMessage(e: DOMException): String =
+    s"${e.name}: ${e.message}"
+
+//  private[asyncfile] def mkException(e: dom.ErrorEvent): Exception =
+//    new IOException(mkExceptionMessage(e))
+
+  private[asyncfile] def mkException(e: DOMException): Exception =
     new IOException(mkExceptionMessage(e))
 
 //  private[asyncfile] def mkStoreName(path: String): String = s"fs:$path"
 
-  private[asyncfile] def reqToFuture[A](req: IDBRequest, failure: dom.ErrorEvent => Throwable = mkException)
+  private[asyncfile] def reqToFuture[A](req: IDBRequest, failure: DOMException => Throwable = mkException)
                                        (success: dom.Event => A): Future[A] = {
     val pr = Promise[A]()
-    req.onerror = {
-      // XXX TODO: why this guarantee broke in scalajs DOM 1.2.0 ?
-      e0 =>
-        val e = e0.asInstanceOf[dom.ErrorEvent]
-        pr.failure(failure(e))
-//      case e: dom.ErrorEvent =>
-//        pr.failure(failure(e))
-//
-//      case _ =>
-//        pr.failure(new IOException(req.error.message))
+    req.onerror = { _ =>
+      pr.failure(failure(req.error))
     }
     req.onsuccess = { e =>
       try {
@@ -134,7 +132,7 @@ object IndexedDBFile {
     val path = uri.getPath
     log.debug(s"readMeta($path)")
     val req = store.get(js.Array(path, KEY_META))
-    reqToFuture(req, e => mkException(e)) { _ =>
+    reqToFuture(req) { _ =>
       val bMetaOpt  = req.result.asInstanceOf[js.UndefOr[jsta.ArrayBuffer]]
       val bMeta     = bMetaOpt.getOrElse(throw new FileNotFoundException(uriFromPath(path)))
       val meta      = Meta.fromArrayBuffer(uri, bMeta)

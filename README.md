@@ -21,7 +21,7 @@ To use the library in your project:
 
     "de.sciss" %% "asyncfile" % v
 
-The current version `v` is `"0.2.0"`
+The current version `v` is `"0.2.1"`
 
 ## contributing
 
